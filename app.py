@@ -138,4 +138,7 @@ def plot_png():
     FigureCanvas(figure).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+if __name__=='__main__':
+  app.run()
+
 
