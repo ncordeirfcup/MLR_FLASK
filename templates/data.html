@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+  <h3>Model</h3>
+  <p>{{ tbl | safe }}</p>
+  <h3>Training set: Statistical results</h3>
+  <table>
+    <tr>
+      <th>No. samples</th>
+      <th>R2</th>
+      <th>R2adj</th>
+      <th>Q2LOO</th>
+      <th>MAE</th>
+      <th>MSE</th>
+      <th>Rm2(Train)</th>
+      <th>Delta Rm2(Train)</th>
+    </tr>
+    <tr>
+      <td>{{ trsize }}</td>
+      <td>{{ r2 | round (3)}}</td>
+      <td>{{ r2adj | round (3)}}</td>
+      <td>{{ q2loo | round (3)}}</td>
+      <td>{{ mae | round (3)}}</td>
+      <td>{{ mse | round (3)}}</td>
+      <td>{{ rm2tr | round (3)}}</td>
+      <td>{{ drm2tr | round (3)}}</td>
+    </tr>
+  </table>
+  <h5>Maximum intercorrelation (Pearson r) between two descriptors: {{ mc | round(3) }}</h5>
+  <a href="/correlmatrix">Correlation Matrix</a><br>
+
+  <a href="/resultsTR">Training set predicted results</a>
+  <h3>Test set: Statistical results</h3>
+  <table>
+    <tr>
+      <th>No. samples</th>
+      <th>R2Pred/Q2F1</th>
+      <th>Q2F2</th>
+      <th>RMSEP</th>
+      <th>Rm2(Test)</th>
+      <th>Delta Rm2(Test)</th>
+    </tr>
+    <tr>
+      <td>{{ tssize }}</td>
+      <td>{{ r2pred | round (3)}}</td>
+      <td>{{ r2pred2 | round (3)}}</td>
+      <td>{{ rmsep | round (3)}}</td>
+      <td>{{ rm2ts | round (3)}}</td>
+      <td>{{ drm2ts | round (3)}}</td>
+    </tr>
+  </table>
+<a href="/resultsTS">Test set predicted results</a><br>
+<a href="/plot.png">Check plot</a>
+{% endblock %}
