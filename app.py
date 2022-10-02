@@ -11,6 +11,7 @@ from flask import Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from model_params import model_params
+import matplotlib.pyplot as plt
 
 
 app=Flask(__name__)
@@ -40,6 +41,14 @@ def create_figure(yobs, ypred,yobsts, ypredts):
     axis.set_xlabel('Observed values',fontsize=28)
     axis.legend(fontsize=18)
     axis.tick_params(labelsize=18)
+    return fig
+def create_figure2(x,y):
+    fig = plt.figure(figsize = (20, 10))
+    plt.bar(x,y,align='center') # A bar chart
+    plt.xlabel('Descriptors', fontsize = 20)
+    plt.ylabel('Standardized coefficients', fontsize = 20)
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
     return fig
 
 def r2pr(Xts,yts,model,m):
@@ -95,10 +104,15 @@ def data():
        global dc
        dc=Xtr.corr()
        mx,mn=corrl(dc)
-       mc=max(mx,mn)
+       mc=max(abs(mx),abs(mn))
        reg.fit(Xtr,ytr)
        mp=model_params(Xtr,ytr,reg)
        tbl=mp.fit()
+       tbl1=tbl[1:].sort_values('Coef', ascending=False)
+       y=tuple(list(tbl1['Coef']))
+       x=tuple(list(tbl1['Desc']))
+       global figure2
+       figure2=create_figure2(x,y)
        r2,q2loo,mae,mse,rm2tr,drm2tr,m,l,ypr = model(Xtr,Xts,ytr,yts,data_tr)
        r2adj=1-((1-r2)*(Xtr.shape[0]-1)/(Xtr.shape[0]-Xtr.shape[1]-1))
        ytspr,r2pred,r2pred2,RMSEP,rm2ts,drm2ts=r2pr(Xts,yts,reg,m)
@@ -110,8 +124,8 @@ def data():
        yadsts=adsts.fit()
        global dfts
        dfts=pd.concat([nts,Xts,yts,ytspr,yadsts],axis=1)
-       global figure
-       figure=create_figure(ytr,ypr,yts,ytspr)
+       global figure1
+       figure1=create_figure(ytr,ypr,yts,ytspr)
        return render_template('data.html', r2=r2,r2adj=r2adj, q2loo=q2loo,mae=mae,mse=mse,
               rm2tr=rm2tr,drm2tr=drm2tr,r2pred=r2pred, r2pred2=r2pred2,
               rmsep=RMSEP, rm2ts=rm2ts, drm2ts=drm2ts,trsize=ntr.shape[0],
@@ -135,8 +149,15 @@ def correlmatrix():
 @app.route('/plot.png')
 def plot_png():
     output = io.BytesIO()
-    FigureCanvas(figure).print_png(output)
+    FigureCanvas(figure1).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/plot2.png')
+def plot_png2():
+    output = io.BytesIO()
+    FigureCanvas(figure2).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
 
-
+if __name__=='__main__':
+  app.run(debug=True)
