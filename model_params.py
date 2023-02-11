@@ -33,5 +33,12 @@ class model_params():
           #print(f"SE(beta_hat[{p_}]): {standard_error}")
           lm.append(round(standard_error,3))
        dc={'Desc': lt, 'Coef':ls, 'Std err':lm}
+       print(dc)
+       line=''
+       for a,b,c in zip(dc['Desc'][1:],dc['Coef'][1:],dc['Std err'][1:]):
+           line=line+str(round(b,3))+'(+/-'+str(round(c,3))+')'+'*'+a+'+'
+       for b,c in zip(dc['Coef'][0:1],dc['Std err'][0:1]):
+           line2=line+str(round(b,3))+'(+/-'+str(round(c,3))+')'
+       line3=str(self.y.columns[0])+'='+line2
        result=pd.DataFrame(dc)
-       return result
+       return result,line3
