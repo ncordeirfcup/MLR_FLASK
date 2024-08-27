@@ -18,7 +18,7 @@ class model_params():
        N = len(self.X)
        p = len(self.X.columns) + 1  # plus one because LinearRegression adds an intercept term
 
-       X_with_intercept = np.empty(shape=(N, p), dtype=np.float)
+       X_with_intercept = np.empty(shape=(N, p), dtype=float)
        X_with_intercept[:, 0] = 1
        X_with_intercept[:, 1:p] = self.X.values
 
