@@ -16,7 +16,7 @@ class apdom():
              l.append(media[j])
              m.append(sigma[j])
         
-         result = np.copy(data)
+         result = data.to_numpy(copy=True)
          for i in range(x_):
              for j in range(y_):
                  result[i,j] = ((data.iloc[i,j] - media[j]) / sigma[j])
@@ -31,7 +31,7 @@ class apdom():
               media[j] = x[j]
               sigma[j] = y[j]
         
-          result = np.copy(data)
+          result = data.to_numpy(copy=True)
           for i in range(x_):
               for j in range(y_):
                   result[i,j] = ((data.iloc[i,j] - media[j]) / sigma[j])
